@@ -7,3 +7,16 @@ body {
   color: white;
   background: black;
 }
+
+.success {
+  --toastBackground: #48bb78;
+  --toastBarBackground: #2f855a;
+}
+.error {
+  --toastBackground: #f56565;
+  --toastBarBackground: #c53030;
+}
+.warning {
+  --toastBackground: #ffcc00;
+  --toastBarBackground: #b79200;
+}
