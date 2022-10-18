@@ -1,4 +1,5 @@
 # SYNTH EQ
+
 A synthetic equities crypto exchange
 
 ## Initial Setup

@@ -10,7 +10,7 @@
     "sourceMap": true,
     "strict": true
   },
-	"ts-node": {
+  "ts-node": {
     "esm": true,
     "transpileOnly": true
   }
