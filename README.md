@@ -1,38 +1,39 @@
-# create-svelte
+# SYNTH EQ
+A synthetic equities crypto exchange
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+## Initial Setup
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Pnpm is a blazingly fast package manager
 
 ```bash
-npm run dev
+# install pnpm
+npm install -g pnpm
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# install node modules
+pnpm i
+
+# build once to make server.ts work
+pnpm build
 ```
 
-## Building
+## Develop
 
-To create a production version of your app:
+Dev command starts `server.ts` and `vite dev`
 
 ```bash
-npm run build
+pnpm dev
 ```
 
-You can preview the production build with `npm run preview`.
+## Build
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```bash
+pnpm build
+```
+
+## Start
+
+```bash
+pnpm start
+```
+
+> This app runs on railway.app
