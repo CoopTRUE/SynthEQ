@@ -30,7 +30,6 @@ app.use(
   })
 )
 
-// @ts-expect-error (ts-node doesn't like ./db)
 // import { gameIdMap, login } from './db.ts'
 // console.log('DATABASE CONNECTED AND LOADED!')
 

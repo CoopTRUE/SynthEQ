@@ -15,7 +15,11 @@ const config = {
   ],
 
   kit: {
-    adapter: adapter({ precompress: true })
+    adapter: adapter({ precompress: true }),
+    alias: {
+      $components: path.resolve(__dirname, './src/lib/components'),
+      '@constants': path.resolve(__dirname, './src/constants.ts')
+    }
   }
 }
 
