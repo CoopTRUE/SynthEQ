@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signature String @unique
+  address   String @unique
+
+  logins           Login[]
+  transactions     Transaction[]
+  buyerContracts   Contract[]    @relation("buyer")
+  shorterContracts Contract[]    @relation("shorter")
+}
+
+model Login {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  ip        String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Contract {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  ticker    String
+
+  buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])
+  buyerAddress   String
+  shorter        User          @relation("shorter", fields: [shorterAddress], references: [address])
+  shorterAddress String
+  transactions   Transaction[]
+
+  completed Boolean @default(false)
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  token     String
+  value     Int
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  Contract   Contract @relation(fields: [contractId], references: [id])
+  contractId String
+}
