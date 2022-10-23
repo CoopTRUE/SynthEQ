@@ -18,6 +18,8 @@ const config = {
     adapter: adapter({ precompress: true }),
     alias: {
       $components: path.resolve(__dirname, './src/lib/components'),
+      $client: path.resolve(__dirname, './src/lib/client'),
+      $server: path.resolve(__dirname, './src/lib/server'),
       '@constants': path.resolve(__dirname, './src/constants.ts')
     }
   }

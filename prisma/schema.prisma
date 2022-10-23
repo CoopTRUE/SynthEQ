@@ -34,9 +34,10 @@ model Login {
 }
 
 model Contract {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  ticker    String
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  ticker     String
+  expiration DateTime
 
   buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])
   buyerAddress   String
