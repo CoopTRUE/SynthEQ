@@ -1,25 +1,31 @@
 import type { Contract } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
+import * as lt from 'long-timeout'
+import moment from 'moment'
 export const prisma = new PrismaClient()
 
-export let contracts: Contract[] = []
+export let contracts: Contract[] = await getContracts()
+contracts.forEach((contract) => {
+  if (contract.completed) return
 
+  const contractId = contract.id
+  const { expiration } = contract
+  const timeRemaining = expiration.getTime() - Date.now()
+  console.log(`Contract ${contractId} will exercise ${moment(expiration).fromNow()}`)
+  lt.setTimeout(() => exerciseContract(contractId), timeRemaining)
+})
 export async function refresh() {
-  // console.log('refreshed', Date.now())
   const newContracts = await getContracts()
-  if (JSON.stringify(newContracts) !== JSON.stringify(contracts)) {
-    console.log(JSON.stringify(newContracts), JSON.stringify(contracts))
-    contracts = newContracts
-    console.log(`Obtained ${newContracts.length} contracts`)
-  }
+  console.log(`Refreshed ${newContracts.length} contracts!`)
+}
+
+export async function exerciseContract(contractId: string) {
+  // TODO: Code exercise function
+  await refresh()
 }
 
 export async function getContracts() {
-  return await prisma.contract.findMany({
-    where: {
-      completed: { equals: false }
-    }
-  })
+  return await prisma.contract.findMany()
 }
 export async function createContract() {}
 export async function login(signature: string, address: string, ip: string) {

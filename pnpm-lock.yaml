@@ -4,6 +4,7 @@ specifiers:
   '@prisma/client': ^4.5.0
   '@sveltejs/adapter-node': next
   '@sveltejs/kit': next
+  '@types/long-timeout': ^0.1.0
   '@typescript-eslint/eslint-plugin': ^5.27.0
   '@typescript-eslint/parser': ^5.27.0
   '@zerodevx/svelte-toast': ^0.8.0
@@ -13,6 +14,8 @@ specifiers:
   eslint-config-prettier: ^8.3.0
   eslint-plugin-svelte3: ^4.0.0
   ethers: ^5.7.1
+  long-timeout: ^0.1.1
+  moment: ^2.29.4
   postcss: ^8.4.14
   postcss-load-config: ^4.0.1
   prettier: ^2.6.2
@@ -32,12 +35,15 @@ dependencies:
   '@zerodevx/svelte-toast': 0.8.0
   axios: 1.1.3
   ethers: 5.7.2
+  long-timeout: 0.1.1
+  moment: 2.29.4
   prisma: 4.5.0
   zod: 3.19.1
 
 devDependencies:
   '@sveltejs/adapter-node': 1.0.0-next.99
   '@sveltejs/kit': 1.0.0-next.522_svelte@3.52.0+vite@3.1.8
+  '@types/long-timeout': 0.1.0
   '@typescript-eslint/eslint-plugin': 5.40.1_ukgdydjtebaxmxfqp5v5ulh64y
   '@typescript-eslint/parser': 5.40.1_z4bbprzjrhnsfa24uvmcbu7f5q
   autoprefixer: 10.4.12_postcss@8.4.18
@@ -634,6 +640,10 @@ packages:
 
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
+    dev: true
+
+  /@types/long-timeout/0.1.0:
+    resolution: {integrity: sha512-Me7e8hnxjjicl352xCf9VPO9t7EA7oMbPTpaheFl1s/QjxTfFisO3bSU6pPpnc2p8ugGD1zIur+M26sYgvZxlg==}
     dev: true
 
   /@types/node/18.11.3:
@@ -1826,6 +1836,10 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
 
+  /long-timeout/0.1.1:
+    resolution: {integrity: sha512-BFRuQUqc7x2NWxfJBCyUrN8iYUYznzL9JROmRz1gZ6KlOIgmoD+njPVbb+VNn2nGMKggMsK79iUNErillsrx7w==}
+    dev: false
+
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
@@ -1913,6 +1927,10 @@ packages:
     dependencies:
       minimist: 1.2.7
     dev: true
+
+  /moment/2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
+    dev: false
 
   /mri/1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
