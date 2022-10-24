@@ -1,5 +1,4 @@
 export const SERVER_ADDRESS = '0xa1792198be90499a006515ccc6739d6527003296' as const // must be lowercase
-//
 export const NETWORKS = {
   56: {
     name: 'Binance Smart Chain',
