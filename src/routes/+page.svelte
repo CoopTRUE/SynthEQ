@@ -1,20 +1,16 @@
 <script lang="ts">
   import type { PageData } from './$types'
-  import axios from 'axios'
   import Login from '$components/Login.svelte'
+  import ContractList from '$components/ContractList.svelte'
   export let data: PageData
-  console.log(data)
 </script>
 
+<h1 class="center">Welcome to synthEQ</h1>
 <Login />
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<ContractList contracts={data.contracts} />
 
 <style>
-  p {
-    display: flex;
-    height: fit-content;
-    align-items: center;
-    flex-direction: column;
+  h1 {
+    font-size: var(--header-size);
   }
 </style>
