@@ -34,10 +34,13 @@ model Login {
 }
 
 model Contract {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  ticker     String
-  expiration DateTime
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  ticker             String //Ticker of stock. Ex: $QQQ
+  value              Float //Value of stock at contract creation. Ex: $3000
+  expiration         DateTime //When contract expires
+  sharesAtActivation Float? //The amount of shares `value` is worth when a shorter activates
 
   buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])
   buyerAddress   String
@@ -52,7 +55,7 @@ model Transaction {
   id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now())
   token     String
-  value     Int
+  value     Float
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
