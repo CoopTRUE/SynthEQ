@@ -5,11 +5,12 @@ export const prisma = new PrismaClient()
 export let contracts: Contract[] = []
 
 export async function refresh() {
+  console.log('refreshed', Date.now())
   const newContracts = await getContracts()
-  console.log(`Obtained ${newContracts.length} contracts`)
   if (JSON.stringify(newContracts) !== JSON.stringify(contracts)) {
+    console.log(JSON.stringify(newContracts), JSON.stringify(contracts))
     contracts = newContracts
-    console.log('CONTRACTS OVERWRITTEN')
+    console.log(`Obtained ${newContracts.length} contracts`)
   }
 }
 

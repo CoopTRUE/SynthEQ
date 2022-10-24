@@ -1,3 +1,7 @@
 import { refresh } from './db'
 
-setInterval(refresh, 1000)
+refresh()
+const interval = setInterval(refresh, 3000)
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => clearInterval(interval))
+}
