@@ -6,6 +6,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
+    "studio": "prisma studio",
     "start": "node build/index.js",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -41,5 +42,9 @@
     "vite": "^3.1.0",
     "zod": "^3.19.1"
   },
-  "type": "module"
+  "type": "module",
+  "browserslist": [
+    "> 1%",
+    "last 1 versions"
+  ]
 }

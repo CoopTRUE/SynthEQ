@@ -1,6 +1,7 @@
 import adapter from '@sveltejs/adapter-node'
 import preprocess from 'svelte-preprocess'
 import path from 'path'
+import autoprefixer from 'autoprefixer'
 
 const __dirname = path.resolve()
 
@@ -10,7 +11,9 @@ const config = {
   // for more information about preprocessors
   preprocess: [
     preprocess({
-      postcss: true
+      postcss: {
+        plugins: [autoprefixer()]
+      }
     })
   ],
 

@@ -14,4 +14,7 @@ export const provider = writable<Nullable<ethers.providers.Web3Provider>>(null)
 export const address = writable<Nullable<string>>(null)
 export const chainId = writable<Nullable<keyof typeof NETWORKS>>(null)
 
-export const cuid = writable<Nullable<string>>(null)
+import { browser } from '$app/environment'
+export const cuid = writable<Nullable<string>>(
+  browser ? localStorage.getItem('cuid') || null : null
+)

@@ -34,8 +34,10 @@ model Login {
 }
 
 model Contract {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
+  id          String    @id @default(cuid())
+  activated   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  activatedAt DateTime?
 
   ticker             String //Ticker of stock. Ex: $QQQ
   value              Float //Value of stock at contract creation. Ex: $3000
@@ -48,7 +50,9 @@ model Contract {
   shorterAddress String
   transactions   Transaction[]
 
-  completed Boolean @default(false)
+  completed              Boolean   @default(false)
+  shareValueAtCompletion DateTime?
+  completedAt            DateTime?
 }
 
 model Transaction {
