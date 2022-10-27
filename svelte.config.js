@@ -15,8 +15,7 @@ const config = {
   ],
 
   kit: {
-    adapter: adapter(),
-    // adapter: adapter({ precompress: true }),
+    adapter: adapter({ precompress: true }),
     alias: {
       $components: path.resolve(__dirname, './src/lib/components'),
       $client: path.resolve(__dirname, './src/lib/client'),
