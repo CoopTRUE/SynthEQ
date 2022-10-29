@@ -1,18 +1,16 @@
-import type { Contract } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
 import * as lt from 'long-timeout'
 import moment from 'moment'
 export const prisma = new PrismaClient()
 
-export let contracts: Contract[] = await getContracts()
+export let contracts = await getContracts()
 contracts.forEach((contract) => {
   if (contract.completed) return
 
-  const contractId = contract.id
-  const { expiration } = contract
+  const { id, expiration } = contract
   const timeRemaining = expiration.getTime() - Date.now()
-  console.log(`Contract ${contractId} will exercise ${moment(expiration).fromNow()}`)
-  lt.setTimeout(() => exerciseContract(contractId), timeRemaining)
+  console.log(`Contract ${id} will exercise ${moment(expiration).fromNow()}`)
+  lt.setTimeout(() => exerciseContract(id), timeRemaining)
 })
 export async function refresh() {
   const newContracts = await getContracts()
@@ -27,7 +25,30 @@ export async function exerciseContract(contractId: string) {
 export async function getContracts() {
   return await prisma.contract.findMany()
 }
-export async function createContract() {}
+export async function createContract(
+  cuid: string,
+  txnHash: string,
+  expiration: Date,
+  ticker: string
+) {
+  const duplicateTxn = !!prisma.transaction.count({
+    where: {
+      txnHash: { equals: txnHash }
+    }
+  })
+  if (duplicateTxn) {
+    throw new Error('DUPLICATE TRANSACTION HASH')
+  }
+
+  const cuidExists = !!prisma.user.count({
+    where: {
+      id: { equals: cuid }
+    }
+  })
+  if (!cuidExists) {
+    throw new Error("CUID DOESN'T EXIST")
+  }
+}
 export async function login(signature: string, address: string, ip: string) {
   return await prisma.user.upsert({
     where: { signature },

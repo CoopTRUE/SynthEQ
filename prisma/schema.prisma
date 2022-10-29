@@ -51,15 +51,18 @@ model Contract {
   transactions   Transaction[]
 
   completed              Boolean   @default(false)
-  shareValueAtCompletion DateTime?
+  shareValueAtCompletion Float?
   completedAt            DateTime?
 }
 
 model Transaction {
   id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now())
+  chain     Int
   token     String
   value     Float
+
+  txnHash String
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
