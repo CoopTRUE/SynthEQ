@@ -21,6 +21,7 @@
     "long-timeout": "^0.1.1",
     "moment": "^2.29.4",
     "prisma": "^4.5.0",
+    "yahoo-stock-prices": "^1.1.0",
     "zod": "^3.19.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
-import type { PageServerLoad } from './$types'
+import type { RequestHandler } from './$types'
 import { contracts } from '$server/db'
 export const GET: RequestHandler = () => {
-  return Response(JSON.stringify({ contracts }))
+  return new Response(JSON.stringify({ contracts }))
 }

@@ -3,7 +3,12 @@ import * as lt from 'long-timeout'
 import moment from 'moment'
 export const prisma = new PrismaClient()
 
+// @ts-expect-error
+import { getCurrentPrice } from 'yahoo-stock-prices'
+getCurrentPrice('QQQ').then(console.log)
+
 export let contracts = await getContracts()
+type a = typeof contracts & { b: true }[]
 contracts.forEach((contract) => {
   if (contract.completed) return
 
