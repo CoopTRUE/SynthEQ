@@ -1,4 +1,4 @@
-export const SERVER_ADDRESS = '0xa1792198BE90499a006515CCc6739d6527003296' as const
+export const SERVER_ADDRESS = '0x1BB817100c8C752D1d5B6504009Dd2258524B0aA' as const
 export const MIN_VALUE = 10 as const // IN USD
 export const NETWORKS = {
   56: {
