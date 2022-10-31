@@ -31,10 +31,10 @@ export async function exerciseContract(contractId: string) {
 export async function getContracts() {
   return await prisma.contract.findMany()
 }
-export async function createContract<NetworkId extends keyof typeof NETWORKS>(
+export async function createContract(
   cuid: string,
-  token: keyof typeof NETWORKS[NetworkId]['tokens'],
-  value: string,
+  token: string,
+  value: number,
   txnHash: string,
   expiration: Date,
   ticker: string

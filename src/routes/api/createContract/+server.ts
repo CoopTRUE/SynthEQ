@@ -1,17 +1,17 @@
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { z } from 'zod'
-import { MIN_VALUE, NETWORKS, SERVER_ADDRESS, TOKEN_ABI } from '@constants'
+import { MIN_VALUE, MAX_VALUE, NETWORKS, SERVER_ADDRESS, TOKEN_ABI } from '@constants'
 import { createContract } from '$server/db'
 import { BigNumber, ethers } from 'ethers'
 
-type NetworkId = keyof typeof NETWORKS
-type Tokens = typeof NETWORKS[NetworkId]['tokens']
+type ChainId = keyof typeof NETWORKS
+
 // looks complex but essentially it creates a provider for each network id
 const providers = Object.entries(NETWORKS).reduce((providers, [id, { rpc }]) => {
-  providers[+id as NetworkId] = new ethers.providers.JsonRpcProvider(rpc)
+  providers[+id as ChainId] = new ethers.providers.JsonRpcProvider(rpc)
   return providers
-}, {} as Record<NetworkId, ethers.providers.JsonRpcProvider>)
+}, {} as Record<ChainId, ethers.providers.JsonRpcProvider>)
 
 const jsonValidator = z.object({
   cuid: z.string().cuid(),
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
   try {
     var { cuid, chainId: _chainId, txnHash, expiration, ticker } = jsonValidator.parse(json)
-    var chainId = _chainId as NetworkId
+    var chainId = _chainId as ChainId
   } catch (e) {
     // @ts-expect-error
     throw error(400, e.issues)
@@ -52,11 +52,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     throw error(400, 'Transaction failed!')
   }
   const contractAddress = transaction.to
-  if (
-    !Object.values(NETWORKS[chainId].tokens)
-      .map((tokenData) => tokenData.address)
-      .some((realContractAddress) => realContractAddress === contractAddress)
-  ) {
+  // looks really complex but its finding the first token that contains this contract address
+  const tokenName = Object.entries(NETWORKS[chainId].tokens).find(
+    ([_, address]) => address === contractAddress
+  )?.[0]
+  if (!tokenName) {
     throw error(400, 'Transaction does not interact with a supported coin')
   }
   const iface = new ethers.utils.Interface(TOKEN_ABI)
@@ -75,14 +75,25 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   // if (transactionData.args.recipient !== SERVER_ADDRESS) {
   //   throw error(400, 'Transaction does not transfer coins to the server address!')
   // }
-  if (+ethers.utils.formatEther(transactionData.args.amount) < MIN_VALUE) {
+  const value = +ethers.utils.formatEther(transactionData.args.amount)
+  if (value < MIN_VALUE) {
     throw error(400, 'Transaction is too small!')
   }
-  return new Response('ok')
-  // try {
-  //   const contractId = await createContract<chainId>(cuid, txnHash, expiration, ticker)
-  //   return new Response(JSON.parse({ contractId }), { status: 200, statusText: 'ALL GOOD SLATT' })
-  // } catch {
-  //   throw error(400, 'Unexpected server error!')
-  // }
+  if (value > MAX_VALUE) {
+    throw error(400, 'Transaction too big!')
+  }
+  try {
+    const contractId = await createContract(
+      cuid,
+      tokenName,
+      value,
+      txnHash,
+      new Date(new Date().getTime() + expiration),
+      ticker
+    )
+    // return new Response(JSON.parse({ contractId }), { status: 200, statusText: 'ALL GOOD SLATT' })
+  } catch {
+    throw error(400, 'Unexpected server error!')
+  }
+  return new Response('d')
 }
