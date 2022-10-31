@@ -72,9 +72,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   if (transactionData.functionFragment.name !== 'transfer') {
     throw error(400, 'Transaction is not a transfer transaction!')
   }
-  // if (transactionData.args.recipient !== SERVER_ADDRESS) {
-  //   throw error(400, 'Transaction does not transfer coins to the server address!')
-  // }
+  if (transactionData.args.recipient !== SERVER_ADDRESS) {
+    throw error(400, 'Transaction does not transfer coins to the server address!')
+  }
   const value = +ethers.utils.formatEther(transactionData.args.amount)
   if (value < MIN_VALUE) {
     throw error(400, 'Transaction is too small!')
@@ -86,14 +86,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const contractId = await createContract(
       cuid,
       tokenName,
+      chainId,
       value,
       txnHash,
       new Date(new Date().getTime() + expiration),
       ticker
     )
-    // return new Response(JSON.parse({ contractId }), { status: 200, statusText: 'ALL GOOD SLATT' })
-  } catch {
+    return new Response(JSON.stringify({ contractId }), {
+      status: 200,
+      statusText: 'ALL GOOD SLATT'
+    })
+  } catch (e) {
+    console.warn(e)
     throw error(400, 'Unexpected server error!')
   }
-  return new Response('d')
 }

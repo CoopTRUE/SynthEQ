@@ -34,28 +34,52 @@ export async function getContracts() {
 export async function createContract(
   cuid: string,
   token: string,
+  chainId: number,
   value: number,
   txnHash: string,
   expiration: Date,
   ticker: string
 ) {
-  const duplicateTxn = !!prisma.transaction.count({
+  const duplicateTxn = !!(await prisma.transaction.count({
     where: {
       txnHash: { equals: txnHash }
     }
-  })
+  }))
   if (duplicateTxn) {
     throw new Error('DUPLICATE TRANSACTION HASH')
   }
 
-  const cuidExists = !!prisma.user.count({
+  const cuidExists = !!(await prisma.user.count({
     where: {
       id: { equals: cuid }
     }
-  })
+  }))
   if (!cuidExists) {
     throw new Error("CUID DOESN'T EXIST")
   }
+
+  const contract = await prisma.contract.create({
+    data: {
+      expiration,
+      ticker,
+      value,
+      buyer: {
+        connect: { id: cuid }
+      },
+      transactions: {
+        create: {
+          txnHash,
+          chainId,
+          token,
+          value,
+          user: {
+            connect: { id: cuid }
+          }
+        }
+      }
+    }
+  })
+  return contract.id
 }
 export async function login(signature: string, address: string, ip: string) {
   return await prisma.user.upsert({

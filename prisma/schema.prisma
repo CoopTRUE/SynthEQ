@@ -46,8 +46,8 @@ model Contract {
 
   buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])
   buyerAddress   String
-  shorter        User          @relation("shorter", fields: [shorterAddress], references: [address])
-  shorterAddress String
+  shorter        User?         @relation("shorter", fields: [shorterAddress], references: [address])
+  shorterAddress String?
   transactions   Transaction[]
 
   completed              Boolean   @default(false)
@@ -56,13 +56,11 @@ model Contract {
 }
 
 model Transaction {
-  id        Int      @id @default(autoincrement())
+  txnHash   String   @id
   timestamp DateTime @default(now())
-  chain     Int
+  chainId   Int
   token     String
   value     Float
-
-  txnHash String
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
