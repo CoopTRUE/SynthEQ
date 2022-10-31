@@ -1,4 +1,5 @@
-export const SERVER_ADDRESS = '0xa1792198be90499a006515ccc6739d6527003296' as const // must be lowercase
+export const SERVER_ADDRESS = '0xa1792198BE90499a006515CCc6739d6527003296' as const
+export const MIN_VALUE = 10 as const // IN USD
 export const NETWORKS = {
   56: {
     name: 'Binance Smart Chain',
@@ -17,3 +18,6 @@ export const NETWORKS = {
     }
   }
 } as const
+
+// prettier-ignore
+export const TOKEN_ABI = [{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]

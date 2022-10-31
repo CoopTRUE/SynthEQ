@@ -1,3 +1,4 @@
+import type { NETWORKS } from '@constants'
 import { PrismaClient } from '@prisma/client'
 import * as lt from 'long-timeout'
 import moment from 'moment'
@@ -30,8 +31,10 @@ export async function exerciseContract(contractId: string) {
 export async function getContracts() {
   return await prisma.contract.findMany()
 }
-export async function createContract(
+export async function createContract<NetworkId extends keyof typeof NETWORKS>(
   cuid: string,
+  token: keyof typeof NETWORKS[NetworkId]['tokens'],
+  value: string,
   txnHash: string,
   expiration: Date,
   ticker: string
