@@ -42,6 +42,7 @@ model Contract {
   ticker             String //Ticker of stock. Ex: $QQQ
   value              Float //Value of stock at contract creation. Ex: $3000
   expiration         DateTime //When contract expires
+  upside             Float //Max upside
   sharesAtActivation Float? //The amount of shares `value` is worth when a shorter activates
 
   buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])

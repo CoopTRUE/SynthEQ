@@ -18,6 +18,7 @@ const jsonValidator = z.object({
   chainId: z.number().refine((chainId) => chainId in NETWORKS, {
     message: `ChainId is not in [${Object.keys(NETWORKS).join(', ')}]`
   }),
+  upside: z.number().nonnegative(),
   txnHash: z.string().regex(/^0x([A-Fa-f0-9]{64})$/),
   ticker: z.string(),
   expiration: z.number().min(8.64e7)
@@ -30,7 +31,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 
   try {
-    var { cuid, chainId: _chainId, txnHash, expiration, ticker } = jsonValidator.parse(json)
+    var { cuid, chainId: _chainId, upside, txnHash, expiration, ticker } = jsonValidator.parse(json)
     var chainId = _chainId as ChainId
   } catch (e) {
     // @ts-expect-error
@@ -88,6 +89,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       tokenName,
       chainId,
       value,
+      upside,
       txnHash,
       new Date(new Date().getTime() + expiration),
       ticker

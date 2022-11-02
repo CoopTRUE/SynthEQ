@@ -36,6 +36,7 @@ export async function createContract(
   token: string,
   chainId: number,
   value: number,
+  upside: number,
   txnHash: string,
   expiration: Date,
   ticker: string
@@ -63,6 +64,7 @@ export async function createContract(
       expiration,
       ticker,
       value,
+      upside,
       buyer: {
         connect: { id: cuid }
       },

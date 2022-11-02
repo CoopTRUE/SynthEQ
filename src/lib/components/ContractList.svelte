@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Contract } from '@prisma/client'
+  import moment from 'moment'
 
   export let contracts: Contract[]
   console.log(contracts)
@@ -7,22 +8,34 @@
 
 <div class="wrapper">
   {#each contracts as contract}
-    <div class="container">
-      <span>Buyer: {contract.buyerAddress}</span>
-      <span>Shorter: {contract.shorterAddress}</span>
+    <div class="contract">
+      <p class="ticker">{contract.ticker}</p>
+      <p class="value">${contract.value}</p>
+      <p class="experation">EXPIRES IN {moment(contract.expiration).fromNow()}</p>
     </div>
   {/each}
 </div>
 
 <style lang="scss">
   .wrapper {
-    height: calc(100vh - var(--header-size));
-    width: 95vw;
+    margin: 100px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
   }
-  .container {
+  .contract {
     width: 400px;
-    height: 400px;
-    background: black;
-    overflow: scroll;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    .ticker {
+      color: black;
+      font-weight: bolder;
+      font-size: 40px;
+    }
+    .value {
+      color: green;
+      font-size: 30px;
+    }
   }
 </style>
