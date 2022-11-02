@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { browser } from '$app/environment'
   import type { Contract } from '@prisma/client'
   import moment from 'moment'
 
   export let contracts: Contract[]
-  console.log(contracts)
+  if (browser) {
+    console.log(contracts)
+  }
 </script>
 
 <div class="wrapper">
@@ -18,7 +21,9 @@
 
 <style lang="scss">
   .wrapper {
-    margin: 100px;
+    background: rgb(0, 0, 0, 0.3);
+    min-height: calc(100vh - var(--header-size) - 40px);
+    margin: 0 100px 100px 100px;
     display: flex;
     gap: 40px;
     flex-wrap: wrap;
