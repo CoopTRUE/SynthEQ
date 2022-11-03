@@ -1,9 +1,9 @@
-import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { z } from 'zod'
-import { MIN_VALUE, MAX_VALUE, NETWORKS, SERVER_ADDRESS, TOKEN_ABI } from '@constants'
-import { txns, users, createContract } from '$server/db'
-import { BigNumber, ethers } from 'ethers'
+import { NETWORKS, SERVER_ADDRESS, TOKEN_ABI } from '@constants'
+import { ethers } from 'ethers'
+import { users, txns, contracts, activateContract } from '$server/db'
+import { error } from '@sveltejs/kit'
 import { providers } from '$server/server'
 
 type ChainId = keyof typeof NETWORKS
@@ -13,11 +13,11 @@ const jsonValidator = z.object({
   chainId: z.number().refine((chainId) => chainId in NETWORKS, {
     message: `ChainId is not in [${Object.keys(NETWORKS).join(', ')}]`
   }),
-  upside: z.number().nonnegative(),
   txnHash: z.string().regex(/^0x([A-Fa-f0-9]{64})$/),
-  ticker: z.string(),
-  expiration: z.number().min(8.64e7)
+  contractId: z.string().cuid()
 })
+const round = (n: number) => Math.ceil(n * 100) / 100
+
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     var json = await request.json()
@@ -26,9 +26,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 
   try {
-    var { cuid, chainId: _chainId, upside, txnHash, expiration, ticker } = jsonValidator.parse(json)
+    var { cuid, chainId: _chainId, txnHash, contractId } = jsonValidator.parse(json)
     var chainId = _chainId as ChainId
-  } catch (e) {
+  } catch {
     // @ts-expect-error
     throw error(400, e.issues)
   }
@@ -78,28 +78,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   if (transactionData.args.recipient !== SERVER_ADDRESS) {
     throw error(400, 'Transaction does not transfer coins to the server address!')
   }
+
+  const contract = contracts.get(cuid)
+  if (!contract) {
+    throw error(400, 'Contract could not be found!')
+  }
+  const activationCost = contract.value * contract.upside
+
   const value = +ethers.utils.formatEther(transactionData.args.amount)
-  if (value < MIN_VALUE) {
-    throw error(400, 'Transaction is too small!')
+  if (round(activationCost) !== round(value)) {
+    throw error(400, 'Value sent does not equal activation cost')
   }
-  if (value > MAX_VALUE) {
-    throw error(400, 'Transaction too big!')
-  }
+
   try {
-    const contractId = await createContract(
-      cuid,
-      tokenName,
-      chainId,
-      value,
-      upside,
-      txnHash,
-      new Date(new Date().getTime() + expiration),
-      ticker
-    )
-    return new Response(JSON.stringify({ contractId }), {
-      status: 200,
-      statusText: 'ALL GOOD SLATT'
-    })
+    await activateContract(cuid, chainId, txnHash, contractId)
+    return new Response('all good babey')
   } catch (e) {
     console.warn(e)
     throw error(400, 'Unexpected server error!')

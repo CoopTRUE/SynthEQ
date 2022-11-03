@@ -68,4 +68,6 @@ model Transaction {
 
   Contract   Contract @relation(fields: [contractId], references: [id])
   contractId String
+
+  isCreationPayment Boolean
 }
