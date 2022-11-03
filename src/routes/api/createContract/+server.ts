@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { z } from 'zod'
-import { MIN_VALUE, MAX_VALUE, NETWORKS, SERVER_ADDRESS, TOKEN_ABI } from '@constants'
+import { SERVER_ADDRESS, CONSTRAINTS, NETWORKS, TOKEN_ABI } from '@constants'
 import { txns, users, createContract } from '$server/db'
 import { BigNumber, ethers } from 'ethers'
 import { providers } from '$server/server'
@@ -10,13 +10,13 @@ type ChainId = keyof typeof NETWORKS
 
 const jsonValidator = z.object({
   cuid: z.string().cuid(),
+  ticker: z.string(),
+  expiration: z.number().min(8.64e7),
+  upside: z.number().nonnegative(),
   chainId: z.number().refine((chainId) => chainId in NETWORKS, {
     message: `ChainId is not in [${Object.keys(NETWORKS).join(', ')}]`
   }),
-  upside: z.number().nonnegative(),
-  txnHash: z.string().regex(/^0x([A-Fa-f0-9]{64})$/),
-  ticker: z.string(),
-  expiration: z.number().min(8.64e7)
+  txnHash: z.string().regex(/^0x([A-Fa-f0-9]{64})$/)
 })
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
@@ -26,17 +26,17 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 
   try {
-    var { cuid, chainId: _chainId, upside, txnHash, expiration, ticker } = jsonValidator.parse(json)
+    var { cuid, ticker, expiration, upside, chainId: _chainId, txnHash } = jsonValidator.parse(json)
     var chainId = _chainId as ChainId
   } catch (e) {
     // @ts-expect-error
     throw error(400, e.issues)
   }
 
-  if (!users.has(cuid)) {
+  if (!users.includes(cuid)) {
     throw new Error('User does not exist in the database!')
   }
-  if (txns.has(txnHash)) {
+  if (txns.includes(txnHash)) {
     throw new Error('Transaction hash already used!')
   }
 
@@ -79,22 +79,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     throw error(400, 'Transaction does not transfer coins to the server address!')
   }
   const value = +ethers.utils.formatEther(transactionData.args.amount)
-  if (value < MIN_VALUE) {
+  if (value < CONSTRAINTS.MIN_CONTRACT_VALUE) {
     throw error(400, 'Transaction is too small!')
   }
-  if (value > MAX_VALUE) {
+  if (value > CONSTRAINTS.MAX_CONTRACT_VALUE) {
     throw error(400, 'Transaction too big!')
   }
   try {
     const contractId = await createContract(
       cuid,
-      tokenName,
-      chainId,
+      ticker,
       value,
-      upside,
-      txnHash,
       new Date(new Date().getTime() + expiration),
-      ticker
+      upside,
+      chainId,
+      txnHash,
+      tokenName
     )
     return new Response(JSON.stringify({ contractId }), {
       status: 200,

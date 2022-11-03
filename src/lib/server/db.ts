@@ -10,21 +10,21 @@ import { getCurrentPrice } from 'yahoo-stock-prices'
 getCurrentPrice('QQQ').then(console.log)
 
 // keep users, txns, and contracts in memory to avoid database slowdowns or ddos
-export const users = new Set(await getUsers())
-export const txns = new Set(await getTxns())
+export const users = await getUsers()
+export const txns = await getTxns()
 export const contracts = await getContracts()
 
-contracts.forEach((contract, id) => {
+contracts.forEach((contract) => {
   if (contract.completed) return
 
-  const { expiration } = contract
+  const { id, expiration } = contract
   const timeRemaining = expiration.getTime() - Date.now()
   console.log(`Contract ${id} will exercise ${moment(expiration).fromNow()}`)
   lt.setTimeout(() => exerciseContract(id), timeRemaining)
 })
 export async function refresh() {
   const newContracts = await getContracts()
-  console.log(`Refreshed ${newContracts.size} contracts!`)
+  console.log(`Refreshed ${newContracts.length} contracts!`)
 }
 
 export async function exerciseContract(contractId: string) {
@@ -32,11 +32,7 @@ export async function exerciseContract(contractId: string) {
   await refresh()
 }
 export async function getContracts() {
-  const contracts = await prisma.contract.findMany()
-  // looks complex but it essentially maps contracts by id
-  return new Map<string, Omit<Contract, 'id'>>(
-    contracts.map((c) => [c.id, (({ id, ...keys }) => keys)(c)])
-  )
+  return await prisma.contract.findMany()
 }
 export async function getUsers() {
   const users = await prisma.user.findMany()
@@ -70,13 +66,13 @@ export async function activateContract(
 
 export async function createContract(
   cuid: string,
-  token: string,
-  chainId: number,
+  ticker: string,
   value: number,
-  upside: number,
-  txnHash: string,
   expiration: Date,
-  ticker: string
+  upside: number,
+  chainId: number,
+  txnHash: string,
+  token: string
 ) {
   const contract = await prisma.contract.create({
     data: {
@@ -116,8 +112,8 @@ export async function login(signature: string, address: string, ip: string) {
       address
     }
   })
-  if (!users.has(user.id)) {
-    users.add(user.id)
+  if (users.includes(user.id)) {
+    users.push(user.id)
   }
   return user
 }
