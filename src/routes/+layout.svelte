@@ -1,9 +1,6 @@
 <script>
-  import Footer from '$components/Footer.svelte'
-  import { SvelteToast } from '@zerodevx/svelte-toast'
+  import 'normalize.css'
   import '../global.scss'
 </script>
 
 <slot />
-<SvelteToast />
-<Footer />

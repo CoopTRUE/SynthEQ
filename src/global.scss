@@ -1,41 +1,16 @@
-:root {
-  --header-size: 40px;
-}
-
 *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
-  color: white;
-  background: #FEAC5E;
-  background: linear-gradient(40deg, #4BC0C8, #C779D0, #FEAC5E);
   min-height: 100vh;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.center-col {
-  @extend .center;
-  flex-direction: column;
-}
-
-.success {
-  --toastBackground: #48bb78;
-  --toastBarBackground: #2f855a;
-}
-.error {
-  --toastBackground: #f56565;
-  --toastBarBackground: #c53030;
-}
-.warning {
-  --toastBackground: #ffcc00;
-  --toastBarBackground: #b79200;
 }
