@@ -1,6 +1,6 @@
 import type { ethers } from 'ethers'
 
-interface Token {
+export interface Token {
   readonly name: string
   readonly symbol: string
   readonly address: string
@@ -15,9 +15,7 @@ export interface ActivatedClientToken extends ActivatedTokenBase {
   balance: number
   serverBalance: number
   price: number
-  readonly updateBalance: () => Promise<void>
-  readonly updateServerBalance: () => Promise<void>
-  readonly updatePrice: () => Promise<void>
+  readonly update: () => Promise<void>
 }
 export interface ActivatedServerToken extends ActivatedTokenBase {
   readonly getServerBalance: () => Promise<number>
@@ -39,12 +37,12 @@ interface Network {
 interface Networks {
   [chainId: number]: Network
 }
-interface ActivatedServerNetwork {
+export interface ActivatedServerNetwork {
   readonly getTransaction: (txnHash: string) => Promise<ethers.TransactionResponse | null>
   readonly getTransactionReceipt: (txnHash: string) => Promise<ethers.TransactionReceipt | null>
   readonly tokens: readonly ActivatedServerToken[]
 }
-export interface ActivatedServerNetworks {
+interface ActivatedServerNetworks {
   [chainId: number]: ActivatedServerNetwork
 }
 
@@ -105,7 +103,7 @@ export default {
         name: 'USD Coin',
         symbol: 'USDC',
         address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
-        oracleAddress: '0xf096872672f44d6eba71458d74fe67f9a77a23b9',
+        oracleAddress: '0xF096872672F44d6EBA71458D74fe67F9a77a23B9',
         image: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg'
       },
       // {

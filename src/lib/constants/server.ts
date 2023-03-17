@@ -1,4 +1,4 @@
-export const serverAddress = '0x1BB817100c8C752D1d5B6504009Dd2258524B0aA'
+export const address = '0x1BB817100c8C752D1d5B6504009Dd2258524B0aA'
 
 /** Returns the ticket deposit fee */
 export function addDepositFee(usd: number) {
