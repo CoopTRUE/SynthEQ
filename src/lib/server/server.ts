@@ -1,2 +1,5 @@
-import { getActivatedClientTokens, getActivatedServerNetworks } from '$lib/networkLib'
-import { ethers } from 'ethers'
+import { getActivatedServerNetworks } from '$lib/networkLib'
+import { WALLET_PRIVATE_KEY } from '$env/static/private'
+
+const networks = await getActivatedServerNetworks(WALLET_PRIVATE_KEY)
+console.log(networks)
