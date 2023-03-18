@@ -12,7 +12,6 @@
 
 <main>
   <h1>SynthEQ</h1>
-  <Wallet />
 </main>
 
 <style lang="scss">

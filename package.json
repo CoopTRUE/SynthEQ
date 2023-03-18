@@ -13,7 +13,7 @@
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-vercel": "^2.3.2",
+    "@sveltejs/adapter-vercel": "^2.4.0",
     "@sveltejs/kit": "^1.12.0",
     "@types/node": "^18.15.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
@@ -42,6 +42,7 @@
     "normalize.css": "^8.0.1",
     "picocolors": "^1.0.0",
     "prisma": "^4.11.0",
+    "svelte-french-toast": "1.0.4-beta.0",
     "zod": "^3.21.4"
   }
 }

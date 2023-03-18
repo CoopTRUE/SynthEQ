@@ -33,16 +33,15 @@ interface Network {
 interface Networks {
   [chainId: number]: Network
 }
+export type ChainId = keyof typeof networks
 export interface ActivatedServerNetwork {
   readonly getTransaction: (txnHash: string) => Promise<ethers.TransactionResponse | null>
   readonly getTransactionReceipt: (txnHash: string) => Promise<ethers.TransactionReceipt | null>
   readonly tokens: readonly ActivatedServerToken[]
 }
-interface ActivatedServerNetworks {
-  [chainId: number]: ActivatedServerNetwork
-}
+export type ActivatedServerNetworks = Record<keyof typeof networks, ActivatedServerNetwork>
 
-export default {
+const networks = {
   56: {
     name: 'Binance Smart Chain',
     nativeCurrency: 'BNB',
@@ -113,3 +112,5 @@ export default {
     ]
   }
 } as const satisfies Networks
+
+export default networks

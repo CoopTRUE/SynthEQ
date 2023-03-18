@@ -22,7 +22,7 @@ model User {
 }
 
 model Login {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   timestamp   DateTime @default(now())
   ip          String
   user        User     @relation(fields: [userAddress], references: [address])
@@ -30,7 +30,7 @@ model Login {
 }
 
 model Position {
-  id          String    @id @default(cuid())
+  id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
   activated   Boolean   @default(false)
   activatedAt DateTime?

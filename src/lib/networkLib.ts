@@ -1,16 +1,16 @@
 //hi
 import NETWORKS, {
   type ActivatedClientToken,
-  type ActivatedServerNetwork,
+  type ActivatedServerNetworks,
   type ActivatedServerToken,
-  type Token
+  type Token,
+  type ChainId
 } from '@constants/networks'
 import ABI from '@constants/abi'
 import { ethers } from 'ethers'
 import * as SERVER from '@constants/server'
 import * as log from '$lib/logging'
 
-type ChainId = keyof typeof NETWORKS
 const iface = new ethers.Interface(ABI)
 
 async function retryOnFail<T>(fn: () => Promise<T>, maxRetries = 5, delay = 1000): Promise<T> {
@@ -113,9 +113,9 @@ async function buildServerToken(
 
 export async function getActivatedServerNetworks(
   privateKey: string
-): Promise<Record<ChainId, ActivatedServerNetwork>> {
+): Promise<ActivatedServerNetworks> {
   const wallet = new ethers.Wallet(privateKey)
-  const activatedNetworks = {} as Record<ChainId, ActivatedServerNetwork>
+  const activatedNetworks = {} as ActivatedServerNetworks
   await Promise.all(
     Object.entries(NETWORKS).map(async ([chainId, network]) => {
       const provider = new ethers.JsonRpcProvider(network.rpc)

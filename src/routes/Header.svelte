@@ -1,9 +1,15 @@
-<script>
+<script lang="ts">
+  import type { Writable } from 'svelte/store'
   import { page } from '$app/stores'
+  import { getContext, setContext } from 'svelte'
   import Wallet from './Wallet.svelte'
+
+  let offsetHeight = 0
+  const headerHeight = getContext<Writable<number>>('headerHeight')
+  $: $headerHeight = offsetHeight
 </script>
 
-<header>
+<header bind:offsetHeight>
   <p class="title">SynthEQ</p>
   <div class="middle">
     <a href="/" aria-current={$page.url.pathname === '/' ? 'page' : undefined}>Positions</a>
