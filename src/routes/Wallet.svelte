@@ -6,27 +6,31 @@
   import toast from 'svelte-french-toast'
   import { address as addressStore, chainId as chainIdStore, myPositions } from '$lib/stores'
   import axios from 'axios'
-  import { onMount } from 'svelte'
   import * as SERVER from '$lib/constants/server'
   import type { Position } from '@prisma/client'
 
   $: partialAddress = $addressStore.slice(0, 6) + '...' + $addressStore.slice(-4)
 
   let justConnected = false
+  const toastParams = {
+    loading: 'Connecting...',
+    success: 'Connected!',
+    error: ''
+  }
 
-  async function connect() {
+  async function _connect() {
     if (!window.ethereum) {
-      toast.error('Browser wallet not found')
-      return
+      toastParams.error = 'Browser wallet not found'
+      throw new Error('Browser wallet not found')
     }
     const provider = new BrowserProvider(window.ethereum)
     provider.send('eth_requestAccounts', []).catch(() => {
-      toast.error('Wallet connection failed')
+      toastParams.error = 'Wallet connection failed'
       throw new Error('Wallet connection failed')
     })
     const chainId = await provider.getNetwork().then((network) => Number(network.chainId))
     if (!(chainId in networks)) {
-      toast.error('Unsupported network')
+      toastParams.error = 'Unsupported network'
       throw new Error('Unsupported network')
     }
     $chainIdStore = chainId
@@ -38,6 +42,9 @@
     $addressStore = address
     justConnected = true
   }
+  function connect() {
+    toast.promise(_connect(), toastParams)
+  }
 
   let mouseOver = false
   function disconnect() {
@@ -48,7 +55,7 @@
   }
   async function signMessage(signer: ethers.Signer, address: string) {
     const signature = await signer.signMessage(SERVER.signatureMsg).catch(() => {
-      toast.error('Unable to sign message')
+      toastParams.error = 'Unable to sign message'
       throw new Error('Unable to sign message')
     })
     const { data } = await axios
@@ -57,17 +64,11 @@
         address
       })
       .catch((err) => {
-        toast.error('Unable to verify signature')
+        toastParams.error = 'Unable to verify signature'
         throw new Error('Unable to verify signature')
       })
     return data
   }
-
-  onMount(() => {
-    // if (window.ethereum) {
-    //   connect(true)
-    // }
-  })
 </script>
 
 {#if $addressStore}
