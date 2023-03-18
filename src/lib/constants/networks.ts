@@ -25,11 +25,7 @@ export interface ActivatedServerToken extends ActivatedTokenBase {
 
 interface Network {
   readonly name: string
-  readonly nativeCurrency: {
-    readonly name: string
-    readonly symbol: string
-    readonly decimals: 18
-  }
+  readonly nativeCurrency: string
   readonly rpc: string
   readonly explorer: string
   readonly tokens: readonly Token[]
@@ -49,11 +45,7 @@ interface ActivatedServerNetworks {
 export default {
   56: {
     name: 'Binance Smart Chain',
-    nativeCurrency: {
-      name: 'BNB',
-      symbol: 'BNB',
-      decimals: 18
-    },
+    nativeCurrency: 'BNB',
     rpc: 'https://rpc.ankr.com/bsc',
     explorer: 'https://snowtrace.io/',
     tokens: [
@@ -91,11 +83,7 @@ export default {
   },
   43114: {
     name: 'Avalanche C-Chain',
-    nativeCurrency: {
-      name: 'AVAX',
-      symbol: 'AVAX',
-      decimals: 18
-    },
+    nativeCurrency: 'AVAX',
     rpc: 'https://api.avax.network/ext/bc/C/rpc',
     explorer: 'https://snowtrace.io/',
     tokens: [

@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+
+@font-face {
+  font-family: "Yapari";
+  src: url("/fonts/yapari.ttf");
+}
+
 *,
 *::before,
 *::after {
@@ -13,4 +20,9 @@ html {
 
 body {
   min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  --webkit-font-smoothing: antialiased;
+  // from #F5F7FA -> #E4E7EB
+  background: linear-gradient(215deg, #f2f6fc 0%, #d3dce8 100%);
 }
