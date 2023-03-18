@@ -1,5 +1,9 @@
 <script>
   import Wallet from './Wallet.svelte'
+
+  export let data
+  const { positions, prices } = data
+  console.log(positions, prices)
 </script>
 
 <svelte:head>

@@ -12,38 +12,50 @@
   $: partialAddress = $addressStore.slice(0, 6) + '...' + $addressStore.slice(-4)
 
   let justConnected = false
-  const toastParams = {
-    loading: 'Connecting...',
-    success: 'Connected!',
-    error: ''
-  }
 
-  async function _connect() {
+  async function connect() {
     if (!window.ethereum) {
-      toastParams.error = 'Browser wallet not found'
+      toast.error('Browser wallet not found')
       throw new Error('Browser wallet not found')
     }
     const provider = new BrowserProvider(window.ethereum)
     provider.send('eth_requestAccounts', []).catch(() => {
-      toastParams.error = 'Wallet connection failed'
+      toast.error('Wallet connection failed')
       throw new Error('Wallet connection failed')
     })
     const chainId = await provider.getNetwork().then((network) => Number(network.chainId))
     if (!(chainId in networks)) {
-      toastParams.error = 'Unsupported network'
+      toast.error('Unsupported network')
       throw new Error('Unsupported network')
     }
     $chainIdStore = chainId
     const signer = await provider.getSigner()
     getActivatedClientTokens(signer).then(tokens.set)
     const address = await signer.getAddress()
-    const { positions } = await signMessage(signer, address)
+    const { positions } = await toast.promise(signMessage(signer, address), {
+      loading: 'Verifying signature',
+      success: 'Signature verified',
+      error: 'Signature verification failed'
+    })
+
     $myPositions = positions
     $addressStore = address
     justConnected = true
-  }
-  function connect() {
-    toast.promise(_connect(), toastParams)
+
+    provider.on('accountsChanged', (accounts: string[]) => {
+      if (accounts.length === 0) {
+        disconnect()
+      } else if (accounts[0] !== $addressStore) {
+        $addressStore = accounts[0]
+        justConnected = true
+      }
+    })
+    provider.on('chainChanged', (chainId: ChainId) => {
+      console.log(chainId)
+      if (chainId in networks) {
+        $chainIdStore = chainId
+      }
+    })
   }
 
   let mouseOver = false
@@ -55,7 +67,6 @@
   }
   async function signMessage(signer: ethers.Signer, address: string) {
     const signature = await signer.signMessage(SERVER.signatureMsg).catch(() => {
-      toastParams.error = 'Unable to sign message'
       throw new Error('Unable to sign message')
     })
     const { data } = await axios
@@ -64,7 +75,6 @@
         address
       })
       .catch((err) => {
-        toastParams.error = 'Unable to verify signature'
         throw new Error('Unable to verify signature')
       })
     return data

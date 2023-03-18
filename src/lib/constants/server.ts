@@ -1,5 +1,17 @@
 export const address = '0xEC242C29E54Bc34F71258f85544500aeF0834a75'
 export const signatureMsg = `Signing this message confirms you are the owner of this address. This will cost no gas.`
+export const supportedSymbols = [
+  'qqq',
+  'spy',
+  'dia',
+  'aapl',
+  'amzn',
+  'goog',
+  'msft',
+  'nflx',
+  'tsla'
+] as const
+export const priceUpdateInterval = 60 * 1000
 
 /** Returns the ticket deposit fee */
 export function addDepositFee(usd: number) {

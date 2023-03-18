@@ -28,17 +28,25 @@ export function reqInfo(info: string) {
   console.info(pc.blue(format(info)))
 }
 
-export function deposit(message: string) {
+export function createPosition(message: string) {
+  console.info(pc.bgGreen(format(message)))
+}
+
+export function closePosition(message: string) {
   console.info(pc.bgCyan(format(message)))
 }
 
-export function withdraw(message: string) {
-  console.info(pc.bgMagenta(format(message)))
-}
+// export function deposit(message: string) {
+//   console.info(pc.bgCyan(format(message)))
+// }
 
-export function play(message: string) {
-  console.info(pc.bgGreen(format(message)))
-}
+// export function withdraw(message: string) {
+//   console.info(pc.bgMagenta(format(message)))
+// }
+
+// export function play(message: string) {
+//   console.info(pc.bgGreen(format(message)))
+// }
 
 export function login(message: string) {
   console.info(pc.bgBlue(format(message)))
