@@ -87,7 +87,26 @@ export async function createShorterPosition(data: NewPositionArgs & { address: s
   return position
 }
 
-export async function getPositions() {
+export async function getPositions(): Promise<(Position & { transactions: Transaction[] })[]> {
+  // return [
+  //   {
+  //     id: '123',
+  //     activated: true,
+  //     completed: false,
+  //     expiration: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7),
+  //     ticker: 'aapl',
+  //     value: 155,
+  //     upside: 10,
+  //     sharesAtActivation: 1,
+  //     transactions: [],
+  //     createdAt: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7),
+  //     activatedAt: new Date(),
+  //     completedAt: null,
+  //     buyerAddress: '0x123',
+  //     shorterAddress: '0x456',
+  //     valueAtCompletion: null
+  //   }
+  // ]
   return await redis
     .smembers('positions')
     .then((positions) =>
@@ -107,7 +126,29 @@ export async function updatePrices() {
   await redis.hmset('prices', filtered)
   return false
 }
+async function checkPostions() {
+  console.log('Checking positions')
+  const currentDate = new Date()
+  const prices = await getPrices()
+  console.log(prices)
+  const expiredPositions = await getPositions().then((positions) =>
+    positions.filter((p) => p.activated && !p.completed && p.expiration < currentDate)
+  )
+  console.log('Expired Positions', expiredPositions.length)
+  await Promise.all(
+    expiredPositions.map(async (position) => {
+      const price = prices[position.ticker]
+      const valueAtExpiration = (position.sharesAtActivation as number) * price
+      const percentageIncrease = (valueAtExpiration / position.value - 1) * 100
+      const cappedPercentageIncrease =
+        Math.min(Math.abs(percentageIncrease), position.upside) * (percentageIncrease > 0 ? 1 : -1)
+      // stockLib.exercisePosition(position, cappedPercentageIncrease)
+    })
+  )
+}
 
 const interval =
-  global.interval || updatePrices() || setInterval(updatePrices, SERVER.priceUpdateInterval)
+  global.interval ||
+  updatePrices().then(checkPostions) ||
+  setInterval(updatePrices, SERVER.priceUpdateInterval)
 if (process.env.NODE_ENV === 'development') global.interval = interval
