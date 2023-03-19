@@ -1,9 +1,10 @@
 <script>
+  import { browser } from '$app/environment'
+  import Position from './Position.svelte'
   import Wallet from './Wallet.svelte'
 
-  export let data
+  export let dataw
   const { positions, prices } = data
-  console.log(positions, prices)
 </script>
 
 <svelte:head>
@@ -15,7 +16,11 @@
 </svelte:head>
 
 <main>
-  <h1>SynthEQ</h1>
+  <div class="positions">
+    {#each positions as position}
+      <Position data={position} {prices} />
+    {/each}
+  </div>
 </main>
 
 <style lang="scss">

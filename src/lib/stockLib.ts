@@ -1,8 +1,8 @@
-import { supportedSymbols } from '@constants/server'
+import { supportedTickers } from '@constants/server'
 import yahooFinance from 'yahoo-finance2'
 import * as log from '$lib/logging'
 
-export type SupportedSymbol = (typeof supportedSymbols)[number]
+export type SupportedSymbol = (typeof supportedTickers)[number]
 
 export async function getPrice(ticker: string) {
   const price = await yahooFinance
@@ -17,7 +17,7 @@ export async function getPrice(ticker: string) {
 
 export async function getPrices() {
   const prices = await Promise.all(
-    supportedSymbols.map(async (ticker) => [ticker, await getPrice(ticker)] as const)
+    supportedTickers.map(async (ticker) => [ticker, await getPrice(ticker)] as const)
   )
   return Object.fromEntries(prices)
 }

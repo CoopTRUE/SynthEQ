@@ -1,6 +1,6 @@
 export const address = '0xEC242C29E54Bc34F71258f85544500aeF0834a75'
 export const signatureMsg = `Signing this message confirms you are the owner of this address. This will cost no gas.`
-export const supportedSymbols = [
+export const supportedTickers = [
   'qqq',
   'spy',
   'dia',

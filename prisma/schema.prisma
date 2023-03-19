@@ -38,10 +38,10 @@ model Position {
   ticker             String // Ticker of stock. Ex: QQQ (Nasdaq 100 ETF)
   value              Float // Value of stock at position creation. Ex: 3000 ($3000 dollars)
   expiration         DateTime // When the position expires
-  upside             Float // Max upside
+  upside             Int // Max upside
   sharesAtActivation Float? // The amount of shares `value` is worth when a shorter activates
 
-  buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])
+  buyer          User?         @relation("buyer", fields: [buyerAddress], references: [address])
   buyerAddress   String
   shorter        User?         @relation("shorter", fields: [shorterAddress], references: [address])
   shorterAddress String?
@@ -61,7 +61,7 @@ model Transaction {
 
   user        User     @relation(fields: [userAddress], references: [address])
   userAddress String
-  Position    Position @relation(fields: [positionId], references: [id])
+  position    Position @relation(fields: [positionId], references: [id])
   positionId  String
 
   isCreationPayment Boolean
