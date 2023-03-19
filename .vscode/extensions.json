@@ -1,3 +1,8 @@
 {
-  "recommendations": ["svelte.svelte-vscode", "esbenp.prettier-vscode", "rangav.vscode-thunder-client"]
+  "recommendations": [
+    "svelte.svelte-vscode",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens"
+  ]
 }

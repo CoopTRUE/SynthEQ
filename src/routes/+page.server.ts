@@ -1,8 +1,8 @@
-export const prerender = false
+import { getPositions, getPrices } from '$lib/server/server'
 
-import type { PageServerLoad } from './$types'
-
-import { contracts } from '$server/db'
-export const load: PageServerLoad = async ({ params }) => {
-  return { contracts }
+export function load() {
+  return {
+    positions: getPositions(),
+    prices: getPrices()
+  }
 }

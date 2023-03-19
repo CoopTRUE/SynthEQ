@@ -1,1 +1,1 @@
-import './lib/server/server'
+import '$lib/server/server'

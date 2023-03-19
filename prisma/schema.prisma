@@ -7,67 +7,62 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("MYSQL_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  signature String @unique
-  address   String @unique
-
+  address          String        @id
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  signature        String        @unique
   logins           Login[]
   transactions     Transaction[]
-  buyerContracts   Contract[]    @relation("buyer")
-  shorterContracts Contract[]    @relation("shorter")
+  buyerPositions   Position[]    @relation("buyer")
+  shorterPositions Position[]    @relation("shorter")
 }
 
 model Login {
-  id        Int      @id @default(autoincrement())
-  timestamp DateTime @default(now())
-  ip        String
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  id          String   @id @default(uuid())
+  timestamp   DateTime @default(now())
+  ip          String
+  user        User     @relation(fields: [userAddress], references: [address])
+  userAddress String
 }
 
-model Contract {
-  id          String    @id @default(cuid())
-  activated   Boolean   @default(false)
+model Position {
+  id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
+  activated   Boolean   @default(false)
   activatedAt DateTime?
 
-  ticker             String //Ticker of stock. Ex: $QQQ
-  value              Float //Value of stock at contract creation. Ex: $3000
-  expiration         DateTime //When contract expires
-  upside             Float //Max upside
-  sharesAtActivation Float? //The amount of shares `value` is worth when a shorter activates
+  ticker             String // Ticker of stock. Ex: QQQ (Nasdaq 100 ETF)
+  value              Float // Value of stock at position creation. Ex: 3000 ($3000 dollars)
+  expiration         DateTime // When the position expires
+  upside             Int // Max upside
+  sharesAtActivation Float? // The amount of shares `value` is worth when a shorter activates
 
-  buyer          User          @relation("buyer", fields: [buyerAddress], references: [address])
-  buyerAddress   String
+  buyer          User?         @relation("buyer", fields: [buyerAddress], references: [address])
+  buyerAddress   String?
   shorter        User?         @relation("shorter", fields: [shorterAddress], references: [address])
   shorterAddress String?
   transactions   Transaction[]
 
-  completed              Boolean   @default(false)
-  shareValueAtCompletion Float?
-  completedAt            DateTime?
+  completed         Boolean   @default(false)
+  valueAtCompletion Float?
+  completedAt       DateTime?
 }
 
 model Transaction {
   txnHash   String   @id
-  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
   chainId   Int
   token     String
   value     Float
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  Contract   Contract @relation(fields: [contractId], references: [id])
-  contractId String
+  user        User     @relation(fields: [userAddress], references: [address])
+  userAddress String
+  position    Position @relation(fields: [positionId], references: [id])
+  positionId  String
 
   isCreationPayment Boolean
 }

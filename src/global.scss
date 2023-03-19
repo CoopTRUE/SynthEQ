@@ -1,5 +1,8 @@
-:root {
-  --header-size: 40px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+
+@font-face {
+  font-family: "Yapari";
+  src: url("/fonts/yapari.ttf");
 }
 
 *,
@@ -7,35 +10,19 @@
 *::after {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
-  color: white;
-  background: #FEAC5E;
-  background: linear-gradient(40deg, #4BC0C8, #C779D0, #FEAC5E);
   min-height: 100vh;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.center-col {
-  @extend .center;
-  flex-direction: column;
-}
-
-.success {
-  --toastBackground: #48bb78;
-  --toastBarBackground: #2f855a;
-}
-.error {
-  --toastBackground: #f56565;
-  --toastBarBackground: #c53030;
-}
-.warning {
-  --toastBackground: #ffcc00;
-  --toastBarBackground: #b79200;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  --webkit-font-smoothing: antialiased;
+  // from #F5F7FA -> #E4E7EB
+  background: linear-gradient(215deg, #f2f6fc 0%, #d3dce8 100%);
 }
