@@ -42,7 +42,7 @@ model Position {
   sharesAtActivation Float? // The amount of shares `value` is worth when a shorter activates
 
   buyer          User?         @relation("buyer", fields: [buyerAddress], references: [address])
-  buyerAddress   String
+  buyerAddress   String?
   shorter        User?         @relation("shorter", fields: [shorterAddress], references: [address])
   shorterAddress String?
   transactions   Transaction[]

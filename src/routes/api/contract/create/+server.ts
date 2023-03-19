@@ -44,13 +44,13 @@ export async function POST({ request }) {
     return new Response('User not found', { status: 404 })
   }
 
-  if (await redis.sismember('processingContractCreation', txnHash)) {
-    log.reqError(`${ip}: Contract creation already in progress`)
-    return new Response('Contract creation already in progress', { status: 409 })
+  if (await redis.sismember('processingPositionCreation', txnHash)) {
+    log.reqError(`${ip}: Position creation already in progress`)
+    return new Response('Position creation already in progress', { status: 409 })
   }
-  await redis.sadd('processingContractCreation', txnHash)
+  await redis.sadd('processingPositionCreation', txnHash)
   async function cleanup() {
-    await redis.srem('processingContractCreation', txnHash)
+    await redis.srem('processingPositionCreation', txnHash)
   }
 
   const network = networks[chainId]

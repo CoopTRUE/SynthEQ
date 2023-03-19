@@ -1,7 +1,7 @@
 import redis from './redis'
 import * as SERVER from '@constants/server'
 import * as stockLib from '$lib/stockLib'
-import type { Position } from '@prisma/client'
+import type { Position, Transaction } from '@prisma/client'
 
 function entriesMap<T, U>(obj: Record<string, T>, fn: (v: T) => U) {
   return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, fn(v)]))
@@ -44,6 +44,9 @@ export async function createBuyerPosition(data: NewPositionArgs & { address: str
           isCreationPayment: false
         }
       }
+    },
+    include: {
+      transactions: true
     }
   })
   await redis.sadd('positions', JSON.stringify(position))
@@ -75,6 +78,9 @@ export async function createShorterPosition(data: NewPositionArgs & { address: s
           isCreationPayment: false
         }
       }
+    },
+    include: {
+      transactions: true
     }
   })
   await redis.sadd('positions', JSON.stringify(position))
@@ -84,7 +90,9 @@ export async function createShorterPosition(data: NewPositionArgs & { address: s
 export async function getPositions() {
   return await redis
     .smembers('positions')
-    .then((positions) => positions.map((p) => JSON.parse(p) as Position))
+    .then((positions) =>
+      positions.map((p) => JSON.parse(p) as Position & { transactions: Transaction[] })
+    )
 }
 export async function getPrices() {
   return await redis.hgetall('prices').then((prices) => entriesMap(prices, Number))
@@ -93,7 +101,8 @@ export async function getPrices() {
 export async function updatePrices() {
   const prices = await stockLib.getPrices()
   const filtered = Object.fromEntries(
-    Object.entries(prices).filter(([k, v]) => v !== null)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Object.entries(prices).filter(([_, v]) => v !== null)
   ) as Record<string, number>
   await redis.hmset('prices', filtered)
   return false
