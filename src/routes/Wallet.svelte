@@ -4,7 +4,7 @@
   import { tokens } from '$lib/stores'
   import { getActivatedClientTokens } from '$lib/networkLib'
   import toast from 'svelte-french-toast'
-  import { address as addressStore, chainId as chainIdStore, myPositions } from '$lib/stores'
+  import { address as addressStore, chainId as chainIdStore } from '$lib/stores'
   import axios from 'axios'
   import * as SERVER from '$lib/constants/server'
   import type { Position } from '@prisma/client'
@@ -38,7 +38,6 @@
       error: 'Signature verification failed'
     })
 
-    $myPositions = positions
     $addressStore = address
     justConnected = true
 
@@ -63,7 +62,6 @@
     justConnected = false
     $addressStore = ''
     $tokens = []
-    $myPositions = []
   }
   async function signMessage(signer: ethers.Signer, address: string) {
     const signature = await signer.signMessage(SERVER.signatureMsg).catch(() => {
