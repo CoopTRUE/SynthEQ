@@ -3,7 +3,7 @@
   import Position from './Position.svelte'
   import Wallet from './Wallet.svelte'
 
-  export let dataw
+  export let data
   const { positions, prices } = data
 </script>
 

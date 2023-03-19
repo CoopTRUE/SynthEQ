@@ -18,7 +18,7 @@ interface NewPositionArgs {
   token: string
 }
 
-export async function createBuyerPosition(data: NewPositionArgs & { buyerAddress: string }) {
+export async function createBuyerPosition(data: NewPositionArgs & { address: string }) {
   const position = prisma.position.create({
     data: {
       ticker: data.ticker,
@@ -27,7 +27,7 @@ export async function createBuyerPosition(data: NewPositionArgs & { buyerAddress
       upside: data.upside,
       buyer: {
         connect: {
-          address: data.buyerAddress
+          address: data.address
         }
       },
       transactions: {
@@ -38,7 +38,7 @@ export async function createBuyerPosition(data: NewPositionArgs & { buyerAddress
           value: data.value,
           user: {
             connect: {
-              address: data.buyerAddress
+              address: data.address
             }
           },
           isCreationPayment: false
@@ -49,7 +49,7 @@ export async function createBuyerPosition(data: NewPositionArgs & { buyerAddress
   await redis.sadd('positions', JSON.stringify(position))
   return position
 }
-export async function createShorterPosition(data: NewPositionArgs & { shorterAddress: string }) {
+export async function createShorterPosition(data: NewPositionArgs & { address: string }) {
   const position = prisma.position.create({
     data: {
       ticker: data.ticker,
@@ -58,7 +58,7 @@ export async function createShorterPosition(data: NewPositionArgs & { shorterAdd
       upside: data.upside,
       shorter: {
         connect: {
-          address: data.shorterAddress
+          address: data.address
         }
       },
       transactions: {
@@ -69,7 +69,7 @@ export async function createShorterPosition(data: NewPositionArgs & { shorterAdd
           value: data.value,
           user: {
             connect: {
-              address: data.shorterAddress
+              address: data.address
             }
           },
           isCreationPayment: false
