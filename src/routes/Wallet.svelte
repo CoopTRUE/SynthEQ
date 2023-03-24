@@ -19,7 +19,7 @@
       throw new Error('Browser wallet not found')
     }
     const provider = new BrowserProvider(window.ethereum)
-    provider.send('eth_requestAccounts', []).catch(() => {
+    await provider.send('eth_requestAccounts', []).catch(() => {
       toast.error('Wallet connection failed')
       throw new Error('Wallet connection failed')
     })
